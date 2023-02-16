@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import Axios from "axios";
 import { Link } from "react-router-dom";
 import {
@@ -16,19 +17,10 @@ interface User {
 }
 
 const Login = () => {
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const resetForm = event.target as HTMLFormElement;
-    const target = event.target as typeof event.target & {
-      email: { value: string };
-      password: { value: string };
-    };
+  const email = useRef<HTMLInputElement>(null);
+  const password = useRef<HTMLInputElement>(null);
 
-    const newUser: User = {
-      email: target.email.value,
-      password: target.password.value,
-    };
-
+  const handleLogin = async (resetForm: HTMLFormElement, newUser: User) => {
     try {
       const res = await Axios.post(
         "http://localhost:5000/api/user/login",
@@ -41,6 +33,18 @@ const Login = () => {
     }
   };
 
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const resetForm = event.target as HTMLFormElement;
+
+    const newUser: User = {
+      email: email.current!.value,
+      password: password.current!.value,
+    };
+
+    handleLogin(resetForm, newUser);
+  };
+
   return (
     <Container mt={200}>
       <Card
@@ -51,14 +55,14 @@ const Login = () => {
       >
         <form onSubmit={handleSubmit}>
           <Input.Wrapper id="email" withAsterisk label="Email">
-            <Input id="input-demo" placeholder="Your email" name="email" />
+            <Input id="email" placeholder="Your email" ref={email} />
           </Input.Wrapper>
           <PasswordInput
             placeholder="Password"
             label="Password"
             withAsterisk
-            name="password"
             my={14}
+            ref={password}
           />
           <Flex justify="space-between" align="center">
             <Link to="/register">

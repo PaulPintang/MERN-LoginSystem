@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import Axios from "axios";
 import { Link } from "react-router-dom";
 import {
@@ -11,31 +12,19 @@ import {
 } from "@mantine/core";
 
 interface User {
-  name: String;
-  email: String;
-  password: String;
+  name: string;
+  email: string;
+  password: string;
+  confirmPass?: string;
 }
 
 const Register = () => {
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const resetForm = event.target as HTMLFormElement;
-    const target = event.target as typeof event.target & {
-      name: { value: string };
-      email: { value: string };
-      password: { value: string };
-      confirmPass: { value: string };
-    };
+  const name = useRef<HTMLInputElement>(null);
+  const email = useRef<HTMLInputElement>(null);
+  const password = useRef<HTMLInputElement>(null);
+  const confirmPass = useRef<HTMLInputElement>(null);
 
-    const newUser: User = {
-      name: target.name.value,
-      email: target.email.value,
-      password: target.password.value,
-    };
-
-    if (newUser.password !== target.confirmPass.value)
-      return console.log("Passwords did not match!");
-
+  const createUser = async (resetForm: HTMLFormElement, newUser: User) => {
     try {
       const res = await Axios.post("http://localhost:5000/api/user", newUser);
       console.log("New user ID:", res.data.user);
@@ -43,6 +32,22 @@ const Register = () => {
     } catch (err: any) {
       console.log(err.response.data.error);
     }
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const resetForm = event.target as HTMLFormElement;
+
+    const newUser: User = {
+      name: name.current!.value,
+      email: email.current!.value,
+      password: password.current!.value,
+    };
+
+    if (newUser.password !== confirmPass.current!.value)
+      return console.log("Passwords did not match!");
+
+    createUser(resetForm, newUser);
   };
 
   return (
@@ -55,24 +60,24 @@ const Register = () => {
       >
         <form onSubmit={handleSubmit}>
           <Input.Wrapper withAsterisk label="Name">
-            <Input id="name" placeholder="Your name" name="name" />
+            <Input id="name" placeholder="Your name" ref={name} />
           </Input.Wrapper>
           <Input.Wrapper withAsterisk label="Email" mt={12}>
-            <Input id="email" placeholder="Your email" name="email" />
+            <Input id="email" placeholder="Your email" ref={email} />
           </Input.Wrapper>
           <PasswordInput
             placeholder="Password"
             label="Password"
             withAsterisk
-            name="password"
             my={12}
+            ref={password}
           />
           <PasswordInput
             placeholder="Confirm password"
             label="Confirm password"
             withAsterisk
-            name="confirmPass"
             my={12}
+            ref={confirmPass}
           />
           <Flex justify="space-between" align="center">
             <Link to="/">
