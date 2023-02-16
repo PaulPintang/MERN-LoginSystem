@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import Axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
@@ -20,13 +20,15 @@ const Login = () => {
   const email = useRef<HTMLInputElement>(null);
   const password = useRef<HTMLInputElement>(null);
 
+  const navigate = useNavigate();
   const handleLogin = async (resetForm: HTMLFormElement, newUser: User) => {
     try {
       const res = await Axios.post(
         "http://localhost:5000/api/user/login",
         newUser
       );
-      console.log(res.data.token);
+      localStorage.setItem("token", res.data.token);
+      navigate("/me");
       resetForm.reset();
     } catch (err: any) {
       console.log(err.response.data.error);
