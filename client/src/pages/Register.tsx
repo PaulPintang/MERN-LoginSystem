@@ -24,6 +24,7 @@ const Register = () => {
       name: { value: string };
       email: { value: string };
       password: { value: string };
+      confirmPass: { value: string };
     };
 
     const newUser: User = {
@@ -32,30 +33,19 @@ const Register = () => {
       password: target.password.value,
     };
 
-    const res = await Axios.post("http://localhost:5000/api/user", newUser);
-    console.log("New user ID:", res.data.user);
-    resetForm.reset();
+    if (newUser.password !== target.confirmPass.value)
+      return console.log("Passwords did not match!");
+
+    try {
+      const res = await Axios.post("http://localhost:5000/api/user", newUser);
+      console.log("New user ID:", res.data.user);
+      resetForm.reset();
+    } catch (err: any) {
+      console.log(err.response.data.error);
+    }
   };
 
   return (
-    // <div>
-    //   <form action="" onSubmit={handleSubmit}>
-    //     <div>
-    //       <label htmlFor="">Name</label>
-    //       <input type="text" name="name" />
-    //     </div>
-    //     <div>
-    //       <label htmlFor="">Email</label>
-    //       <input type="text" name="email" />
-    //     </div>
-    //     <div>
-    //       <label htmlFor="">Password</label>
-    //       <input type="text" name="password" />
-    //     </div>
-    //     <button>Register</button>
-    //     <Link to="/">Already have an account?</Link>
-    //   </form>
-    // </div>
     <Container mt={150}>
       <Card
         p="lg"
@@ -79,9 +69,9 @@ const Register = () => {
           />
           <PasswordInput
             placeholder="Confirm password"
-            label="Password"
+            label="Confirm password"
             withAsterisk
-            name="confirmpassword"
+            name="confirmPass"
             my={12}
           />
           <Flex justify="space-between" align="center">
