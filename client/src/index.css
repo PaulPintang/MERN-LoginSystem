@@ -5,6 +5,11 @@
   color-scheme: light dark;
 }
 
+a {
+  text-decoration: none;
+  color: #213547;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

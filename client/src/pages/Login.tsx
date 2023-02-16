@@ -1,5 +1,14 @@
 import Axios from "axios";
 import { Link } from "react-router-dom";
+import {
+  Button,
+  Card,
+  Input,
+  PasswordInput,
+  Flex,
+  Text,
+  Container,
+} from "@mantine/core";
 
 interface User {
   email: String;
@@ -20,29 +29,46 @@ const Login = () => {
       password: target.password.value,
     };
 
-    const res = await Axios.post(
-      "http://localhost:5000/api/user/login",
-      newUser
-    );
-    console.log(res.data.token);
-    resetForm.reset();
+    try {
+      const res = await Axios.post(
+        "http://localhost:5000/api/user/login",
+        newUser
+      );
+      console.log(res.data.token);
+      resetForm.reset();
+    } catch (err: any) {
+      console.log(err.response.data.error);
+    }
   };
 
   return (
-    <div>
-      <form action="" onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="">Email</label>
-          <input type="text" name="email" />
-        </div>
-        <div>
-          <label htmlFor="">Password</label>
-          <input type="text" name="password" />
-        </div>
-        <button>Login</button>
-        <Link to="/register">Create account</Link>
-      </form>
-    </div>
+    <Container mt={200}>
+      <Card
+        p="lg"
+        radius="sm"
+        withBorder
+        style={{ maxWidth: 400, margin: "auto" }}
+      >
+        <form onSubmit={handleSubmit}>
+          <Input.Wrapper id="email" withAsterisk label="Email">
+            <Input id="input-demo" placeholder="Your email" name="email" />
+          </Input.Wrapper>
+          <PasswordInput
+            placeholder="Password"
+            label="Password"
+            withAsterisk
+            name="password"
+            my={14}
+          />
+          <Flex justify="space-between" align="center">
+            <Link to="/register">
+              <Text fz="xs">Don't have an account? Register</Text>
+            </Link>
+            <Button type="submit">Login</Button>
+          </Flex>
+        </form>
+      </Card>
+    </Container>
   );
 };
 
