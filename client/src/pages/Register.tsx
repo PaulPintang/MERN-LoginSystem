@@ -56,7 +56,7 @@ const Register = () => {
         p="lg"
         radius="sm"
         withBorder
-        style={{ maxWidth: 400, margin: "auto" }}
+        style={{ maxWidth: 340, margin: "auto" }}
       >
         <form onSubmit={handleSubmit}>
           <Input.Wrapper withAsterisk label="Name">
@@ -83,7 +83,9 @@ const Register = () => {
             <Link to="/">
               <Text fz="xs">Have an account? Login</Text>
             </Link>
-            <Button type="submit">Register</Button>
+            <Button type="submit" size="sm">
+              Register
+            </Button>
           </Flex>
         </form>
       </Card>

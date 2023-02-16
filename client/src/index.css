@@ -9,6 +9,9 @@ a {
   text-decoration: none;
   color: #213547;
 }
+a:hover {
+  text-decoration: underline;
+}
 
 @media (prefers-color-scheme: light) {
   :root {

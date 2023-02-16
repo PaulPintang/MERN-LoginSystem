@@ -51,11 +51,16 @@ const Login = () => {
         p="lg"
         radius="sm"
         withBorder
-        style={{ maxWidth: 400, margin: "auto" }}
+        style={{ maxWidth: 340, margin: "auto" }}
       >
         <form onSubmit={handleSubmit}>
           <Input.Wrapper id="email" withAsterisk label="Email">
-            <Input id="email" placeholder="Your email" ref={email} />
+            <Input
+              id="email"
+              placeholder="Your email"
+              ref={email}
+              color="yellow"
+            />
           </Input.Wrapper>
           <PasswordInput
             placeholder="Password"
