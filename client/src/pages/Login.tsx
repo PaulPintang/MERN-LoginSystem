@@ -30,11 +30,12 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setProcessing(true);
+
     const user: User = {
       email,
       password,
     };
+    email && password && setProcessing(true);
     const returnToken = await handleLogin(user, setProcessing, setError);
     returnToken && navigate("/me");
   };

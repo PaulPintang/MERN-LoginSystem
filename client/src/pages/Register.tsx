@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
-  Input,
+  TextInput,
   PasswordInput,
   Flex,
   Text,
@@ -19,20 +19,21 @@ export interface User {
 
 const Register = () => {
   const navigate = useNavigate();
-  const name = useRef<HTMLInputElement>(null);
-  const email = useRef<HTMLInputElement>(null);
-  const password = useRef<HTMLInputElement>(null);
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [processing, setProcessing] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent) => {
-    setProcessing(true);
     event.preventDefault();
     const newUser: User = {
-      name: name.current!.value,
-      email: email.current!.value,
-      password: password.current!.value,
+      name,
+      email,
+      password,
     };
-    const returnUser = await createUser(newUser, setProcessing);
+    name && email && password && setProcessing(true);
+    const returnUser = await createUser(newUser, setProcessing, setError);
     returnUser && navigate("/");
   };
 
@@ -45,19 +46,31 @@ const Register = () => {
         style={{ maxWidth: 340, margin: "auto" }}
       >
         <form onSubmit={handleSubmit}>
-          <Input.Wrapper withAsterisk label="Name">
-            <Input id="name" placeholder="Your name" ref={name} required />
-          </Input.Wrapper>
-          <Input.Wrapper withAsterisk label="Email" mt={12}>
-            <Input id="email" placeholder="Your email" ref={email} required />
-          </Input.Wrapper>
+          <TextInput
+            withAsterisk
+            label="Name"
+            placeholder="Your name"
+            value={name}
+            error={error?.toLowerCase().includes("name") && error}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <TextInput
+            mt={13}
+            withAsterisk
+            label="Email"
+            placeholder="Your email"
+            value={email}
+            error={error?.toLowerCase().includes("email") && error}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <PasswordInput
+            my={13}
             placeholder="Password"
             label="Password"
             withAsterisk
-            my={12}
-            ref={password}
-            required
+            value={password}
+            error={error?.toLowerCase().includes("password") && error}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <Flex justify="space-between" align="center">
             <Link to="/">

@@ -21,7 +21,8 @@ export const handleLogin = async (
 
 export const createUser = async (
   newUser: User,
-  setProcessing: (val: boolean) => void
+  setProcessing: (val: boolean) => void,
+  setError: (val: string) => void
 ) => {
   try {
     const res = await axios.post("/api/user", newUser);
@@ -30,7 +31,8 @@ export const createUser = async (
     return user;
   } catch (err: any) {
     const err_msg = err.response.data.error;
-    console.log(err_msg);
+    setError(err_msg);
+
     setProcessing(err && false);
   }
 };
