@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { handleLogin } from "../utils/auth";
 import {
   Button,
   Card,
@@ -9,46 +10,33 @@ import {
   Flex,
   Text,
   Container,
-  Loader,
 } from "@mantine/core";
 
-axios.defaults.baseURL = import.meta.env.VITE_SERVER_DOMAIN;
-
 interface User {
-  email: String;
-  password: String;
+  email: string;
+  password: string;
 }
 
 const Login = () => {
-  const email = useRef<HTMLInputElement>(null);
-  const password = useRef<HTMLInputElement>(null);
-  const [processing, setProcessing] = useState(false);
-
   const navigate = useNavigate();
-  const handleLogin = async (resetForm: HTMLFormElement, newUser: User) => {
-    try {
-      const res = await axios.post("/api/user/login", newUser);
-      localStorage.setItem("token", res.data.token);
-      //   setProcessing(false);
-      navigate("/me");
-      //   resetForm.reset();
-    } catch (err: any) {
-      console.log(err.response.data.error);
-      setProcessing(err && false);
-    }
-  };
+  const email = useRef<HTMLInputElement | any>();
+  const password = useRef<HTMLInputElement>(null);
+  const [processing, setProcessing] = useState<boolean>(false);
+
+  useEffect(() => {
+    email.current.value = localStorage.getItem("email");
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    const resetForm = event.target as HTMLFormElement;
+    setProcessing(true);
 
     const newUser: User = {
-      email: email.current!.value,
+      email: email.current.value,
       password: password.current!.value,
     };
-    setProcessing(true);
-    handleLogin(resetForm, newUser);
+    const returnToken = await handleLogin(newUser, setProcessing);
+    returnToken && navigate("/me");
   };
 
   return (
@@ -61,12 +49,7 @@ const Login = () => {
       >
         <form onSubmit={handleSubmit}>
           <Input.Wrapper id="email" withAsterisk label="Email">
-            <Input
-              id="email"
-              placeholder="Your email"
-              ref={email}
-              color="yellow"
-            />
+            <Input id="email" placeholder="Your email" ref={email} required />
           </Input.Wrapper>
           <PasswordInput
             placeholder="Password"
@@ -74,6 +57,7 @@ const Login = () => {
             withAsterisk
             my={14}
             ref={password}
+            required
           />
           <Flex justify="space-between" align="center">
             <Link to="/register">

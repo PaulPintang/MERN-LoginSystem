@@ -17,7 +17,7 @@ const Profile = () => {
         withBorder
         style={{ maxWidth: 340, margin: "auto" }}
       >
-        <Button onClick={handleLogout}>LOGOUT</Button>
+        <Button onClick={handleLogout}>Sign out</Button>
       </Card>
     </Container>
   );

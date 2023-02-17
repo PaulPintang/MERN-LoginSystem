@@ -1,5 +1,9 @@
+import axios from "axios";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Protected } from "./middleware/Protected";
+
+// Axios baseUrl
+axios.defaults.baseURL = import.meta.env.VITE_SERVER_DOMAIN;
 
 // Routes
 import Login from "./pages/Login";
