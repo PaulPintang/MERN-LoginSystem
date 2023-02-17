@@ -4,16 +4,16 @@ import { handleLogin } from "../utils/auth";
 import {
   Button,
   Card,
-  PasswordInput,
-  Flex,
+  Title,
   Text,
   Container,
   TextInput,
+  Center,
 } from "@mantine/core";
 import { MdAlternateEmail, MdLockOutline } from "react-icons/md";
 import { User } from "./Register";
 
-const Login = () => {
+const ForgotPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -50,43 +50,33 @@ const Login = () => {
         style={{ maxWidth: 340, margin: "auto" }}
       >
         <form onSubmit={handleSubmit}>
+          <Center>
+            <Title order={3}>Forgot your password?</Title>
+          </Center>
+          <Text fz="xs" align="center">
+            Enter your email address and we will share a link to create a new
+            password
+          </Text>
           <TextInput
+            my={16}
             icon={<MdAlternateEmail />}
             withAsterisk
-            label="Email"
             placeholder="Your email"
             value={email}
             error={error?.toLowerCase().includes("email") && error}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <PasswordInput
-            icon={<MdLockOutline />}
-            my={15}
-            placeholder="Password"
-            label="Password"
-            withAsterisk
-            value={password}
-            error={error?.toLowerCase().includes("password") && error}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Link to="/recover">
-            <Text fz="xs" align="right" my={13} c="dimmed">
-              Forgot password?
-            </Text>
-          </Link>
 
-          <Flex justify="space-between" align="center">
-            <Link to="/register">
-              <Text fz="xs">Don't have an account? Register</Text>
-            </Link>
-            <Button type="submit">
-              {processing ? "Signing in..." : "Sign in"}
-            </Button>
-          </Flex>
+          <Button type="submit" fullWidth mb={7}>
+            {processing ? "Sending..." : "Send"}
+          </Button>
+          <Link to="/">
+            <Text fz="xs">Have an account? Login</Text>
+          </Link>
         </form>
       </Card>
     </Container>
   );
 };
 
-export default Login;
+export default ForgotPassword;

@@ -10,6 +10,7 @@ import {
   Text,
   Container,
 } from "@mantine/core";
+import { MdAlternateEmail, MdLockOutline } from "react-icons/md";
 
 export interface User {
   name?: string;
@@ -39,12 +40,7 @@ const Register = () => {
 
   return (
     <Container mt={150}>
-      <Card
-        p="lg"
-        radius="sm"
-        withBorder
-        style={{ maxWidth: 340, margin: "auto" }}
-      >
+      <Card radius="sm" shadow="xs" style={{ maxWidth: 340, margin: "auto" }}>
         <form onSubmit={handleSubmit}>
           <TextInput
             withAsterisk
@@ -55,6 +51,7 @@ const Register = () => {
             onChange={(e) => setName(e.target.value)}
           />
           <TextInput
+            icon={<MdAlternateEmail />}
             mt={13}
             withAsterisk
             label="Email"
@@ -64,6 +61,7 @@ const Register = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           <PasswordInput
+            icon={<MdLockOutline />}
             my={13}
             placeholder="Password"
             label="Password"
