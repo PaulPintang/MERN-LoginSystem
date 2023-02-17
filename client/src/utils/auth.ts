@@ -36,3 +36,18 @@ export const createUser = async (
     setProcessing(err && false);
   }
 };
+
+export const handleOTP = async (
+  email: object,
+  setProcessing: (val: boolean) => void,
+  setError: (val: string) => void
+) => {
+  try {
+    const res = await axios.post("/api/user/recover", email);
+    return res.data;
+  } catch (err: any) {
+    const err_msg = err.response.data.error;
+    setError(err_msg);
+    setProcessing(err && false);
+  }
+};

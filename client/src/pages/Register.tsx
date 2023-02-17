@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { createUser } from "../utils/auth";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -25,6 +25,10 @@ const Register = () => {
   const [password, setPassword] = useState<string>("");
   const [processing, setProcessing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setError(null);
+  }, [name, email, password]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
