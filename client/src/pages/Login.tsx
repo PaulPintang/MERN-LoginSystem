@@ -1,41 +1,41 @@
-import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { handleLogin } from "../utils/auth";
 import {
   Button,
   Card,
-  Input,
   PasswordInput,
   Flex,
   Text,
   Container,
+  TextInput,
 } from "@mantine/core";
-
-interface User {
-  email: string;
-  password: string;
-}
+import { User } from "./Register";
 
 const Login = () => {
   const navigate = useNavigate();
-  const email = useRef<HTMLInputElement | any>();
-  const password = useRef<HTMLInputElement>(null);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
   const [processing, setProcessing] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    email.current.value = localStorage.getItem("email");
+    setError(null);
+  }, [email, password]);
+
+  useEffect(() => {
+    setEmail(localStorage.getItem("email") || "");
   }, []);
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setProcessing(true);
-
-    const newUser: User = {
-      email: email.current.value,
-      password: password.current!.value,
+    const user: User = {
+      email,
+      password,
     };
-    const returnToken = await handleLogin(newUser, setProcessing);
+    const returnToken = await handleLogin(user, setProcessing, setError);
     returnToken && navigate("/me");
   };
 
@@ -48,16 +48,22 @@ const Login = () => {
         style={{ maxWidth: 340, margin: "auto" }}
       >
         <form onSubmit={handleSubmit}>
-          <Input.Wrapper id="email" withAsterisk label="Email">
-            <Input id="email" placeholder="Your email" ref={email} required />
-          </Input.Wrapper>
+          <TextInput
+            withAsterisk
+            label="Email"
+            placeholder="Your email"
+            value={email}
+            error={error?.toLowerCase().includes("email") && error}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <PasswordInput
+            my={15}
             placeholder="Password"
             label="Password"
             withAsterisk
-            my={14}
-            ref={password}
-            required
+            value={password}
+            error={error?.toLowerCase().includes("password") && error}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <Flex justify="space-between" align="center">
             <Link to="/register">

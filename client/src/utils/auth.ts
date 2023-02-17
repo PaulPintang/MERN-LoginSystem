@@ -2,18 +2,19 @@ import axios from "axios";
 import { User } from "../pages/Register";
 
 export const handleLogin = async (
-  newUser: User,
-  setProcessing: (val: boolean) => void
+  user: User,
+  setProcessing: (val: boolean) => void,
+  setError: (val: string) => void
 ) => {
   try {
-    const res = await axios.post("/api/user/login", newUser);
+    const res = await axios.post("/api/user/login", user);
     localStorage.setItem("token", res.data.token);
     localStorage.removeItem("email");
     const token = localStorage.getItem("token");
     return token;
   } catch (err: any) {
     const err_msg = err.response.data.error;
-    console.log(err_msg);
+    setError(err_msg);
     setProcessing(err && false);
   }
 };
