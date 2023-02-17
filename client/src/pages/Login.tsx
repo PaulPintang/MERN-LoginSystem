@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import Axios from "axios";
+import { useRef, useState } from "react";
+import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
@@ -9,7 +9,10 @@ import {
   Flex,
   Text,
   Container,
+  Loader,
 } from "@mantine/core";
+
+axios.defaults.baseURL = import.meta.env.VITE_SERVER_DOMAIN;
 
 interface User {
   email: String;
@@ -19,31 +22,32 @@ interface User {
 const Login = () => {
   const email = useRef<HTMLInputElement>(null);
   const password = useRef<HTMLInputElement>(null);
+  const [processing, setProcessing] = useState(false);
 
   const navigate = useNavigate();
   const handleLogin = async (resetForm: HTMLFormElement, newUser: User) => {
     try {
-      const res = await Axios.post(
-        "http://localhost:5000/api/user/login",
-        newUser
-      );
+      const res = await axios.post("/api/user/login", newUser);
       localStorage.setItem("token", res.data.token);
+      //   setProcessing(false);
       navigate("/me");
-      resetForm.reset();
+      //   resetForm.reset();
     } catch (err: any) {
       console.log(err.response.data.error);
+      setProcessing(err && false);
     }
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
     const resetForm = event.target as HTMLFormElement;
 
     const newUser: User = {
       email: email.current!.value,
       password: password.current!.value,
     };
-
+    setProcessing(true);
     handleLogin(resetForm, newUser);
   };
 
@@ -75,7 +79,9 @@ const Login = () => {
             <Link to="/register">
               <Text fz="xs">Don't have an account? Register</Text>
             </Link>
-            <Button type="submit">Login</Button>
+            <Button type="submit">
+              {processing ? "Signing in..." : "Sign in"}
+            </Button>
           </Flex>
         </form>
       </Card>

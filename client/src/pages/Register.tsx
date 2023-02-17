@@ -15,14 +15,12 @@ interface User {
   name: string;
   email: string;
   password: string;
-  confirmPass?: string;
 }
 
 const Register = () => {
   const name = useRef<HTMLInputElement>(null);
   const email = useRef<HTMLInputElement>(null);
   const password = useRef<HTMLInputElement>(null);
-  const confirmPass = useRef<HTMLInputElement>(null);
 
   const createUser = async (resetForm: HTMLFormElement, newUser: User) => {
     try {
@@ -43,9 +41,6 @@ const Register = () => {
       email: email.current!.value,
       password: password.current!.value,
     };
-
-    if (newUser.password !== confirmPass.current!.value)
-      return console.log("Passwords did not match!");
 
     createUser(resetForm, newUser);
   };
@@ -72,19 +67,12 @@ const Register = () => {
             my={12}
             ref={password}
           />
-          <PasswordInput
-            placeholder="Confirm password"
-            label="Confirm password"
-            withAsterisk
-            my={12}
-            ref={confirmPass}
-          />
           <Flex justify="space-between" align="center">
             <Link to="/">
               <Text fz="xs">Have an account? Login</Text>
             </Link>
             <Button type="submit" size="sm">
-              Register
+              Sign up
             </Button>
           </Flex>
         </form>
