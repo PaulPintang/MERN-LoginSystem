@@ -9,7 +9,8 @@ axios.defaults.baseURL = import.meta.env.VITE_SERVER_DOMAIN;
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
-import SendOTP from "./pages/SendOTP";
+import Recover from "./pages/Recover";
+import ResetPassword from "./pages/ResetPassword";
 
 const router = createBrowserRouter([
   {
@@ -22,7 +23,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/recover",
-    element: <SendOTP />,
+    element: <Recover />,
+  },
+  {
+    path: "/reset",
+    element: <ResetPassword />,
   },
   {
     path: "/me",
