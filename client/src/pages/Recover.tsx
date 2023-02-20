@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { handleOTP } from "../utils/auth";
+import axios from "axios";
 import {
   Button,
   Card,
@@ -39,6 +40,17 @@ const Recover = () => {
     OTP && setProcessing(false);
   };
 
+  const verifyOTP = async (OTP: number | null) => {
+    try {
+      const res = await axios.get("/api/user/verify", { params: { OTP } });
+      const status = res.data;
+      if (status === "verified") return navigate("/reset");
+      setError("Invalid OTP");
+    } catch (err: any) {
+      console.log(err);
+    }
+  };
+
   return (
     <Container mt={200}>
       <Card
@@ -61,15 +73,19 @@ const Recover = () => {
                 my={10}
                 hideControls
                 value={OTP!}
-                onChange={(value) => setOTP(value!)}
+                onChange={(value) => {
+                  setOTP(value!);
+                  setError(null);
+                }}
+                error={error}
               />
 
               <Button
                 color="green"
-                type="submit"
                 fullWidth
                 mb={7}
                 disabled={OTP!?.toString().length >= 6 ? false : true}
+                onClick={() => verifyOTP(OTP)}
               >
                 {/* {processing ? "Verifying..." : "Continue"} */}
                 Continue
