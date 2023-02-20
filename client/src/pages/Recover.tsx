@@ -28,6 +28,10 @@ const Recover = () => {
     setError(null);
   }, [email]);
 
+  useEffect(() => {
+    setEmail(localStorage.getItem("email") || "");
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     email && setProcessing(true);
@@ -37,14 +41,24 @@ const Recover = () => {
       setError,
       setStatus
     );
+    // if (OTP) {
+    //   setProcessing(false);
+    //   localStorage.setItem("email", email);
+    // }
     OTP && setProcessing(false);
   };
 
-  const verifyOTP = async (OTP: number | null) => {
+  const verifyOTP = async () => {
+    setProcessing(true);
     try {
-      const res = await axios.get("/api/user/verify", { params: { OTP } });
+      const res = await axios.get("/api/user/verify", {
+        params: { OTP },
+      });
       const status = res.data;
-      if (status === "verified") return navigate("/reset");
+      if (status === "verified") {
+        navigate("/reset");
+        localStorage.setItem("email", email);
+      }
       setError("Invalid OTP");
     } catch (err: any) {
       console.log(err);
@@ -85,7 +99,7 @@ const Recover = () => {
                 fullWidth
                 mb={7}
                 disabled={OTP!?.toString().length >= 6 ? false : true}
-                onClick={() => verifyOTP(OTP)}
+                onClick={verifyOTP}
               >
                 {/* {processing ? "Verifying..." : "Continue"} */}
                 Continue

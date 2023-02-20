@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createUser } from "../utils/auth";
+import { createUser, handleChangePass } from "../utils/auth";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
@@ -22,26 +22,28 @@ export interface User {
 
 const ResetPassword = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [processing, setProcessing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setError(null);
-  }, [name, email, password]);
+    setEmail(localStorage.getItem("email") || "");
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const newUser: User = {
-      name,
+    const user: User = {
       email,
       password,
     };
-    name && email && password && setProcessing(true);
-    const returnUser = await createUser(newUser, setProcessing, setError);
-    returnUser && navigate("/");
+    if (password === confirmPassword) {
+      const res = await handleChangePass(user);
+      res && navigate("/");
+    }
+    console.log("not match");
+    setError("Password did not match!");
   };
 
   return (
@@ -58,7 +60,6 @@ const ResetPassword = () => {
             label="Password"
             withAsterisk
             value={password}
-            error={error?.toLowerCase().includes("password") && error}
             onChange={(e) => setPassword(e.target.value)}
           />
           <PasswordInput
@@ -67,9 +68,12 @@ const ResetPassword = () => {
             placeholder="Confirm password"
             label="Confirm password"
             withAsterisk
-            value={password}
+            value={confirmPassword}
             error={error?.toLowerCase().includes("password") && error}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              setError(null);
+            }}
           />
           <Button type="submit" color="green" fullWidth mb={7}>
             Set new password
