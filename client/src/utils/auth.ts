@@ -67,3 +67,16 @@ export const handleChangePass = async (data: User) => {
     console.log(error);
   }
 };
+
+export const userLoggedIn = async (token: string) => {
+  try {
+    const user = await axios.get("/api/user/me", {
+      headers: {
+        "auth-token": token,
+      },
+    });
+    return user.data.name;
+  } catch (error) {
+    console.log(error);
+  }
+};

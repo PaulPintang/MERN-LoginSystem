@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { handleLogin } from "../utils/auth";
+import { handleLogin, userLoggedIn } from "../utils/auth";
 import {
   Button,
   Card,
@@ -38,7 +38,12 @@ const Login = () => {
     };
     email && password && setProcessing(true);
     const returnToken = await handleLogin(user, setProcessing, setError);
-    returnToken && navigate("/me");
+    if (returnToken) {
+      const user = await userLoggedIn(returnToken);
+      console.log(user);
+      localStorage.setItem("user", user);
+      navigate("/me");
+    }
   };
 
   return (
