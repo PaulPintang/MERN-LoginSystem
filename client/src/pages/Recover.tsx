@@ -54,8 +54,8 @@ const Recover = () => {
       const res = await axios.get("/api/user/verify", {
         params: { OTP },
       });
-      const status = res.data;
-      if (status === "verified") {
+      const session = res.data;
+      if (session === true) {
         navigate("/reset");
         localStorage.setItem("email", email);
       }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createUser, handleChangePass } from "../utils/auth";
+import { handleChangePass } from "../utils/auth";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
@@ -11,6 +11,7 @@ import {
   Container,
   Title,
   Center,
+  Alert,
 } from "@mantine/core";
 import { MdAlternateEmail, MdLockOutline } from "react-icons/md";
 
@@ -38,12 +39,15 @@ const ResetPassword = () => {
       email,
       password,
     };
+    setProcessing(true);
     if (password === confirmPassword) {
-      const res = await handleChangePass(user);
+      const res = await handleChangePass(user, setError);
+      setProcessing(false);
       res && navigate("/");
+    } else {
+      setError("Password did not match!");
+      setProcessing(false);
     }
-    console.log("not match");
-    setError("Password did not match!");
   };
 
   return (
@@ -52,6 +56,11 @@ const ResetPassword = () => {
         <Center>
           <Title order={3}>Set your new password</Title>
         </Center>
+        {error?.includes("expired") && (
+          <Alert mt={10} color="red">
+            {error}
+          </Alert>
+        )}
         <form onSubmit={handleSubmit}>
           <PasswordInput
             icon={<MdLockOutline />}
@@ -59,6 +68,7 @@ const ResetPassword = () => {
             placeholder="Password"
             label="Password"
             withAsterisk
+            error={error?.toLowerCase().includes("length") && error}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -69,14 +79,14 @@ const ResetPassword = () => {
             label="Confirm password"
             withAsterisk
             value={confirmPassword}
-            error={error?.toLowerCase().includes("password") && error}
+            error={error?.toLowerCase().includes("match") && error}
             onChange={(e) => {
               setConfirmPassword(e.target.value);
               setError(null);
             }}
           />
           <Button type="submit" color="green" fullWidth mb={7}>
-            Set new password
+            {processing ? "Updating" : "Set new password"}
           </Button>
         </form>
       </Card>

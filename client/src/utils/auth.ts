@@ -55,16 +55,19 @@ export const handleOTP = async (
   }
 };
 
-export const handleChangePass = async (data: User) => {
-  console.log("pass matched");
+export const handleChangePass = async (
+  data: User,
+  setError: (val: string) => void
+) => {
   try {
     const res = await axios.put("/api/user/reset", {
       email: data.email,
       password: data.password,
     });
     return res;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    setError(error.response.data.error);
+    console.log(error.response.data.error);
   }
 };
 
