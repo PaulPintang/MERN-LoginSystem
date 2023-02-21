@@ -44,7 +44,6 @@ export const handleOTP = async (
 ) => {
   try {
     const res = await axios.post("/api/user/recover", email);
-    console.log(res.status);
     return res.status;
   } catch (err: any) {
     const err_msg = err.response.data.error;
