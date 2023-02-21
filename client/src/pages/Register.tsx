@@ -30,6 +30,10 @@ const Register = () => {
     setError(null);
   }, [name, email, password]);
 
+  useEffect(() => {
+    localStorage.getItem("token") && navigate("/me");
+  }, []);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const newUser: User = {

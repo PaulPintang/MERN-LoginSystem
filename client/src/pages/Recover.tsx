@@ -30,6 +30,7 @@ const Recover = () => {
 
   useEffect(() => {
     setEmail(localStorage.getItem("email") || "");
+    localStorage.getItem("token") && navigate("/me");
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
