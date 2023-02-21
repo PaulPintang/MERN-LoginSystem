@@ -11,11 +11,13 @@ import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import Recover from "./pages/Recover";
 import ResetPassword from "./pages/ResetPassword";
+import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Login />,
+    errorElement: <NotFound />,
   },
   {
     path: "/register",
