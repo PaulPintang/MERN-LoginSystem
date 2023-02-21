@@ -19,7 +19,7 @@ import { User } from "./Register";
 const Recover = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
-  const [status, setStatus] = useState<number>(0);
+  const [status, setStatus] = useState<number | null>(null);
   const [OTP, setOTP] = useState<number | null>(null);
   const [processing, setProcessing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,17 +35,9 @@ const Recover = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     email && setProcessing(true);
-    const OTP = await handleOTP(
-      { email: email },
-      setProcessing,
-      setError,
-      setStatus
-    );
-    // if (OTP) {
-    //   setProcessing(false);
-    //   localStorage.setItem("email", email);
-    // }
-    OTP && setProcessing(false);
+    const res = await handleOTP({ email: email }, setProcessing, setError);
+    res && setStatus(res);
+    status && setProcessing(false);
   };
 
   const verifyOTP = async () => {
