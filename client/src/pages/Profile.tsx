@@ -72,8 +72,6 @@ const Profile = () => {
     }
   };
 
-  console.log("PROFILE", profile);
-
   return (
     <Container>
       <Center style={{ width: "100%", height: "100vh" }}>
