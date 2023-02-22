@@ -10,6 +10,7 @@ import {
   Avatar as AvatarMantine,
   Text,
   Modal,
+  Alert,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import avatar from "../assets/user.png";
@@ -18,7 +19,7 @@ import AuthContext from "../context/AuthContext";
 const Profile = () => {
   const { user, setUser } = useContext(AuthContext);
   const [opened, setOpened] = useState<boolean>(false);
-  const [src, setSrc] = useState("");
+  const [error, setError] = useState<boolean>(false);
   const [profile, setProfile] = useState<string | null>(null);
   const [viewImg, setViewImg] = useState<string | null>(null);
   const [processing, setProcessing] = useState<boolean>(false);
@@ -66,7 +67,8 @@ const Profile = () => {
       res && setOpened(false);
     } catch (error) {
       console.log(error);
-      setOpened(false);
+      setProcessing(false);
+      setError(true);
     }
   };
 
@@ -101,8 +103,11 @@ const Profile = () => {
         <Modal
           centered
           opened={opened}
-          onClose={() => setOpened(false)}
-          title="Update profile!"
+          onClose={() => {
+            setOpened(false);
+            setError(false);
+          }}
+          title="Update profile"
           size="sm"
         >
           <form onSubmit={handleUpload}>
@@ -110,11 +115,16 @@ const Profile = () => {
               <Avatar
                 onClose={onClose}
                 onCrop={onCrop}
-                width={320}
+                width="100%"
                 height={295}
-                src={src}
               />
-              <Button mt={20} type="submit">
+              {error && (
+                <Alert color="red" mt={10}>
+                  <small>Something went wrong! Try to change your image</small>
+                </Alert>
+              )}
+
+              <Button type="submit" mt={10}>
                 {processing ? "Uploading" : "Upload"}
               </Button>
             </div>
