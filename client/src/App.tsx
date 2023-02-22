@@ -12,6 +12,7 @@ import Register from "./pages/Register";
 import Recover from "./pages/Recover";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import { AuthProvider } from "./context/AuthContext";
 
 const router = createBrowserRouter([
   {
@@ -43,9 +44,11 @@ const router = createBrowserRouter([
 
 const App = () => {
   return (
-    <main>
-      <RouterProvider router={router}></RouterProvider>
-    </main>
+    <AuthProvider>
+      <main>
+        <RouterProvider router={router}></RouterProvider>
+      </main>
+    </AuthProvider>
   );
 };
 

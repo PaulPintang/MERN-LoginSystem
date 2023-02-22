@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { handleLogin, userLoggedIn } from "../utils/auth";
 import {
@@ -12,8 +12,10 @@ import {
 } from "@mantine/core";
 import { MdAlternateEmail, MdLockOutline } from "react-icons/md";
 import { User } from "./Register";
+import AuthContext from "../context/AuthContext";
 
 const Login = () => {
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -27,7 +29,7 @@ const Login = () => {
 
   useEffect(() => {
     setEmail(localStorage.getItem("email") || "");
-    localStorage.getItem("token") && navigate("/me")
+    localStorage.getItem("token") && navigate("/me");
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,8 +43,7 @@ const Login = () => {
     const returnToken = await handleLogin(user, setProcessing, setError);
     if (returnToken) {
       const user = await userLoggedIn(returnToken);
-      console.log(user);
-      localStorage.setItem("user", user);
+      setUser(user);
       navigate("/me");
     }
   };

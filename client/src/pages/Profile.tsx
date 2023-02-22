@@ -1,26 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import Avatar from "react-avatar-edit";
-
+import axios from "axios";
 import {
   Container,
   Center,
   Button,
   Title,
   Stack,
-  FileButton,
   Avatar as AvatarMantine,
   Text,
   Modal,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import avatar from "../assets/user.png";
+import AuthContext from "../context/AuthContext";
 
 const Profile = () => {
+  const { user, setUser } = useContext(AuthContext);
   const [opened, setOpened] = useState<boolean>(false);
   const [src, setSrc] = useState("");
   const [profile, setProfile] = useState<string | null>(null);
   const [viewImg, setViewImg] = useState<string | null>(null);
+  const [processing, setProcessing] = useState<boolean>(false);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+      .get("/api/user/me", {
+        headers: {
+          "auth-token": localStorage.getItem("token"),
+        },
+      })
+      .then((res) => setUser(res.data));
+  }, [profile]);
+
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
@@ -34,12 +48,29 @@ const Profile = () => {
     setViewImg(null);
   };
 
-  const saveImage = () => {
+  const handleUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
     setProfile(viewImg);
-    setOpened(false);
+    setProcessing(true);
+
+    try {
+      const res = await axios.put("/api/user/upload", {
+        image: viewImg,
+        email: user?.email,
+      });
+      setUser({
+        ...user!,
+        image: res.data.image.url,
+      });
+      res && setProcessing(false);
+      res && setOpened(false);
+    } catch (error) {
+      console.log(error);
+      setOpened(false);
+    }
   };
 
-  console.log(profile);
+  console.log(user);
 
   return (
     <Container>
@@ -49,31 +80,45 @@ const Profile = () => {
             <AvatarMantine
               radius={100}
               size={200}
-              src={profile ? profile : avatar}
+              src={user?.image ? user.image : avatar}
               onClick={() => setOpened(true)}
             />
           </Center>
-          <Title order={1}>{localStorage.getItem("user")}</Title>
-          <Button onClick={handleLogout}>Sign out</Button>
+          <div style={{ textAlign: "center" }}>
+            <Title order={1}>{user?.name}</Title>
+            <Text fz="sm" c="dimmed">
+              {user?.email}
+            </Text>
+          </div>
+
+          <Button
+            onClick={handleLogout}
+            style={{ width: "50%", margin: "auto" }}
+          >
+            Sign out
+          </Button>
         </Stack>
         <Modal
           centered
           opened={opened}
           onClose={() => setOpened(false)}
           title="Update profile!"
+          size="sm"
         >
-          <div>
-            <Avatar
-              onClose={onClose}
-              onCrop={onCrop}
-              width={390}
-              height={295}
-              src={src}
-            />
-            <Button mt={20} onClick={saveImage}>
-              Upload
-            </Button>
-          </div>
+          <form onSubmit={handleUpload}>
+            <div>
+              <Avatar
+                onClose={onClose}
+                onCrop={onCrop}
+                width={320}
+                height={295}
+                src={src}
+              />
+              <Button mt={20} type="submit">
+                {processing ? "Uploading" : "Upload"}
+              </Button>
+            </div>
+          </form>
         </Modal>
       </Center>
     </Container>

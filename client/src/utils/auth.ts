@@ -10,8 +10,7 @@ export const handleLogin = async (
     const res = await axios.post("/api/user/login", user);
     localStorage.setItem("token", res.data.token);
     localStorage.removeItem("email");
-    const token = localStorage.getItem("token");
-    return token;
+    return res.data.token;
   } catch (err: any) {
     const err_msg = err.response.data.error;
     setError(err_msg);
@@ -75,7 +74,7 @@ export const userLoggedIn = async (token: string) => {
         "auth-token": token,
       },
     });
-    return user.data.name;
+    return user.data;
   } catch (error) {
     console.log(error);
   }
