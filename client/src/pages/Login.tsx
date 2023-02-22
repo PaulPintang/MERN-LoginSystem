@@ -3,12 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { handleLogin, userLoggedIn } from "../utils/auth";
 import {
   Button,
-  Card,
+  Title,
   PasswordInput,
   Flex,
   Text,
   Container,
   TextInput,
+  Center,
+  UnstyledButton,
 } from "@mantine/core";
 import { MdAlternateEmail, MdLockOutline } from "react-icons/md";
 import { User } from "./Register";
@@ -49,14 +51,17 @@ const Login = () => {
   };
 
   return (
-    <Container mt={200}>
-      <Card
-        p="lg"
-        radius="sm"
-        shadow="xs"
-        style={{ maxWidth: 340, margin: "auto" }}
-      >
-        <form onSubmit={handleSubmit}>
+    <Container>
+      <Center style={{ width: "100%", height: "100vh" }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{ width: "100%", maxWidth: 340, padding: 10 }}
+        >
+          <Title order={2}>Hi, Welcome back!</Title>
+          <Text c="dimmed" mb={15}>
+            Please enter your details
+          </Text>
+
           <TextInput
             icon={<MdAlternateEmail />}
             withAsterisk
@@ -83,15 +88,22 @@ const Login = () => {
           </Link>
 
           <Flex justify="space-between" align="center">
-            <Link to="/register">
-              <Text fz="xs">Don't have an account? Register</Text>
-            </Link>
+            <Text fz="xs" align="center">
+              Don't have an account? {""}
+              <UnstyledButton type="submit">
+                <Link to="/register">
+                  <Text fz="xs" align="center" color="blue">
+                    Register
+                  </Text>
+                </Link>
+              </UnstyledButton>
+            </Text>
             <Button type="submit">
               {processing ? "Signing in..." : "Sign in"}
             </Button>
           </Flex>
         </form>
-      </Card>
+      </Center>
     </Container>
   );
 };

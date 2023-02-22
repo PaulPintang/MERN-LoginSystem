@@ -72,7 +72,7 @@ const Profile = () => {
     }
   };
 
-  console.log(user);
+  console.log("PROFILE", profile);
 
   return (
     <Container>

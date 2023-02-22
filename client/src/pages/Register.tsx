@@ -3,12 +3,14 @@ import { createUser } from "../utils/auth";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
-  Card,
+  Center,
   TextInput,
   PasswordInput,
   Flex,
   Text,
+  Title,
   Container,
+  UnstyledButton,
 } from "@mantine/core";
 import { MdAlternateEmail, MdLockOutline } from "react-icons/md";
 
@@ -47,9 +49,16 @@ const Register = () => {
   };
 
   return (
-    <Container mt={150}>
-      <Card radius="sm" shadow="xs" style={{ maxWidth: 340, margin: "auto" }}>
-        <form onSubmit={handleSubmit}>
+    <Container>
+      <Center style={{ width: "100%", height: "100vh" }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{ width: "100%", maxWidth: 340, padding: 10 }}
+        >
+          <Title order={2}>Create an account</Title>
+          <Text c="dimmed" mb={15}>
+            Please enter your details
+          </Text>
           <TextInput
             withAsterisk
             label="Name"
@@ -78,16 +87,23 @@ const Register = () => {
             error={error?.toLowerCase().includes("password") && error}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Flex justify="space-between" align="center">
-            <Link to="/">
-              <Text fz="xs">Have an account? Login</Text>
-            </Link>
-            <Button type="submit" size="sm">
+          <Flex justify="space-between" align="center" mt={20}>
+            <Text fz="xs" align="center">
+              Have an account? {""}
+              <UnstyledButton type="submit">
+                <Link to="/">
+                  <Text fz="xs" align="center" color="blue">
+                    Login
+                  </Text>
+                </Link>
+              </UnstyledButton>
+            </Text>
+            <Button type="submit">
               {processing ? "Signing up..." : "Sign up"}
             </Button>
           </Flex>
         </form>
-      </Card>
+      </Center>
     </Container>
   );
 };

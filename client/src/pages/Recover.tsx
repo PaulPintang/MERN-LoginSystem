@@ -4,7 +4,6 @@ import { handleOTP } from "../utils/auth";
 import axios from "axios";
 import {
   Button,
-  Card,
   Title,
   Text,
   Container,
@@ -59,20 +58,18 @@ const Recover = () => {
   };
 
   return (
-    <Container mt={200}>
-      <Card
-        p="lg"
-        radius="sm"
-        shadow="xs"
-        style={{ maxWidth: 340, margin: "auto" }}
-      >
-        <form onSubmit={handleSubmit}>
+    <Container>
+      <Center style={{ width: "100%", height: "100vh" }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{ width: "100%", maxWidth: 340, padding: 10 }}
+        >
           {status === 200 ? (
             <>
               <Center>
                 <Title order={3}>Verify email</Title>
               </Center>
-              <Text fz="xs" align="center">
+              <Text fz="sm" align="center">
                 Enter the 6 digit code we sent to your email
               </Text>
 
@@ -98,10 +95,10 @@ const Recover = () => {
                 Continue
               </Button>
 
-              <Text fz="xs" align="center">
+              <Text fz="sm" align="center">
                 Didn't receive code? {""}
                 <UnstyledButton type="submit">
-                  <Text fz="xs" align="center" color="green">
+                  <Text fz="sm" align="center" color="green">
                     Resend
                   </Text>
                 </UnstyledButton>
@@ -112,7 +109,7 @@ const Recover = () => {
               <Center>
                 <Title order={3}>Forgot your password?</Title>
               </Center>
-              <Text fz="xs" align="center">
+              <Text fz="sm" align="center">
                 Enter your email address and we will send an OTP to recover your
                 password
               </Text>
@@ -130,18 +127,26 @@ const Recover = () => {
               <Button
                 type="submit"
                 fullWidth
-                mb={7}
+                mb={10}
                 disabled={email.length >= 12 ? false : true}
               >
                 {processing ? "Sending..." : "Send"}
               </Button>
-              <Link to="/register">
-                <Text fz="xs">Don't have an account? Register</Text>
-              </Link>
+
+              <Text fz="sm" align="center">
+                Don't have an account? {""}
+                <UnstyledButton type="submit">
+                  <Link to="/register">
+                    <Text fz="sm" align="center" color="blue">
+                      Register
+                    </Text>
+                  </Link>
+                </UnstyledButton>
+              </Text>
             </>
           )}
         </form>
-      </Card>
+      </Center>
     </Container>
   );
 };

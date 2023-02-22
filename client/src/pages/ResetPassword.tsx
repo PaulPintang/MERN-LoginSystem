@@ -52,22 +52,28 @@ const ResetPassword = () => {
   };
 
   return (
-    <Container mt={150}>
-      <Card radius="sm" shadow="xs" style={{ maxWidth: 340, margin: "auto" }}>
-        <Center>
-          <Title order={3}>Set your new password</Title>
-        </Center>
-        {error?.includes("expired") && (
-          <Alert mt={10} color="red">
-            {error}
-          </Alert>
-        )}
-        <form onSubmit={handleSubmit}>
+    <Container>
+      <Center style={{ width: "100%", height: "100vh" }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{ width: "100%", maxWidth: 340, padding: 10 }}
+        >
+          <Title order={3} mb={5}>
+            Create your new password
+          </Title>
+          <Text c="dimmed">
+            Almost done. Enter your new password and youre all set
+          </Text>
+          {error?.includes("expired") && (
+            <Alert mt={10} color="red">
+              {error}
+            </Alert>
+          )}
           <PasswordInput
             icon={<MdLockOutline />}
             my={13}
             placeholder="Password"
-            label="Password"
+            label="New password"
             withAsterisk
             error={error?.toLowerCase().includes("length") && error}
             value={password}
@@ -77,7 +83,7 @@ const ResetPassword = () => {
             icon={<MdLockOutline />}
             my={13}
             placeholder="Confirm password"
-            label="Confirm password"
+            label="Confirm new password"
             withAsterisk
             value={confirmPassword}
             error={error?.toLowerCase().includes("match") && error}
@@ -90,7 +96,7 @@ const ResetPassword = () => {
             {processing ? "Updating" : "Set new password"}
           </Button>
         </form>
-      </Card>
+      </Center>
     </Container>
   );
 };
