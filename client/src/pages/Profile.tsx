@@ -15,12 +15,12 @@ import {
 import { useNavigate } from "react-router-dom";
 import avatar from "../assets/user.png";
 import AuthContext from "../context/AuthContext";
+import { ButtonGroup } from "@mantine/core/lib/Button/ButtonGroup/ButtonGroup";
 
 const Profile = () => {
   const { user, setUser } = useContext(AuthContext);
   const [opened, setOpened] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [profile, setProfile] = useState<string | null>(null);
   const [viewImg, setViewImg] = useState<string | null>(null);
   const [processing, setProcessing] = useState<boolean>(false);
 
@@ -33,8 +33,16 @@ const Profile = () => {
           "auth-token": localStorage.getItem("token"),
         },
       })
-      .then((res) => setUser(res.data));
-  }, [profile]);
+      .then((res) => {
+        setUser(res.data);
+      })
+      .catch((err) => console.log(err));
+    console.log("rendering");
+
+    return () => {
+      setUser(null);
+    };
+  }, [processing]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -47,17 +55,16 @@ const Profile = () => {
 
   const onClose = () => {
     setViewImg(null);
+    setError(false);
   };
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    setProfile(viewImg);
     setProcessing(true);
-
     try {
       const res = await axios.put("/api/user/upload", {
         image: viewImg,
-        email: user?.email,
+        _id: user!._id,
       });
       setUser({
         ...user!,
@@ -72,6 +79,20 @@ const Profile = () => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const res = await axios.delete(`api/user/me/${user?._id}`, {
+        headers: {
+          "auth-token": localStorage.getItem("token"),
+        },
+      });
+      res && handleLogout();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(user);
   return (
     <Container>
       <Center style={{ width: "100%", height: "100vh" }}>
@@ -80,7 +101,7 @@ const Profile = () => {
             <AvatarMantine
               radius={100}
               size={200}
-              src={user?.image ? user.image : avatar}
+              src={user?.image || avatar}
               onClick={() => setOpened(true)}
             />
           </Center>
@@ -90,13 +111,14 @@ const Profile = () => {
               {user?.email}
             </Text>
           </div>
-
-          <Button
-            onClick={handleLogout}
-            style={{ width: "50%", margin: "auto" }}
-          >
-            Sign out
-          </Button>
+          <Center>
+            <Button onClick={handleLogout} style={{ width: 100 }} mr="sm">
+              Sign out
+            </Button>
+            <Button onClick={handleDelete} style={{ width: 100 }} color="red">
+              Delete
+            </Button>
+          </Center>
         </Stack>
         <Modal
           centered
