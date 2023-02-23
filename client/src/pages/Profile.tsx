@@ -37,7 +37,6 @@ const Profile = () => {
         setUser(res.data);
       })
       .catch((err) => console.log(err));
-    console.log("rendering");
 
     return () => {
       setUser(null);
@@ -92,7 +91,6 @@ const Profile = () => {
     }
   };
 
-  console.log(user);
   return (
     <Container>
       <Center style={{ width: "100%", height: "100vh" }}>
