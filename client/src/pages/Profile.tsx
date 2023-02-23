@@ -25,12 +25,11 @@ const Profile = () => {
   const [error, setError] = useState<boolean>(false);
   const [viewImg, setViewImg] = useState<string | null>(null);
   const [processing, setProcessing] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    setIsLoading(true);
     const fetchUser = async () => {
       const user = await userLoggedIn(localStorage.getItem("token")!);
       setUser(user);
