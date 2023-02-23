@@ -11,11 +11,13 @@ import {
   Text,
   Modal,
   Alert,
+  LoadingOverlay,
+  Loader,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import avatar from "../assets/user.png";
 import AuthContext from "../context/AuthContext";
-import { ButtonGroup } from "@mantine/core/lib/Button/ButtonGroup/ButtonGroup";
+import { userLoggedIn } from "../utils/auth";
 
 const Profile = () => {
   const { user, setUser } = useContext(AuthContext);
@@ -23,25 +25,23 @@ const Profile = () => {
   const [error, setError] = useState<boolean>(false);
   const [viewImg, setViewImg] = useState<string | null>(null);
   const [processing, setProcessing] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get("/api/user/me", {
-        headers: {
-          "auth-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => {
-        setUser(res.data);
-      })
-      .catch((err) => console.log(err));
+    setIsLoading(true);
+    const fetchUser = async () => {
+      const user = await userLoggedIn(localStorage.getItem("token")!);
+      setUser(user);
+      setIsLoading(false);
+    };
 
+    fetchUser().catch((error) => console.log(error));
     return () => {
       setUser(null);
     };
-  }, [processing]);
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -65,10 +65,8 @@ const Profile = () => {
         image: viewImg,
         _id: user!._id,
       });
-      setUser({
-        ...user!,
-        image: res.data.image.url,
-      });
+      const updatedUser = await userLoggedIn(localStorage.getItem("token")!);
+      setUser(updatedUser);
       res && setProcessing(false);
       res && setOpened(false);
     } catch (error) {
@@ -93,13 +91,18 @@ const Profile = () => {
 
   return (
     <Container>
+      <LoadingOverlay
+        visible={isLoading}
+        loader={<Loader variant="bars" />}
+        overlayOpacity={1}
+      />
       <Center style={{ width: "100%", height: "100vh" }}>
         <Stack>
           <Center>
             <AvatarMantine
               radius={100}
               size={200}
-              src={user?.image || avatar}
+              src={viewImg || user?.image || avatar}
               onClick={() => setOpened(true)}
             />
           </Center>
@@ -111,7 +114,7 @@ const Profile = () => {
           </div>
           <Center>
             <Button onClick={handleLogout} style={{ width: 100 }} mr="sm">
-              Sign out
+              Log out
             </Button>
             <Button onClick={handleDelete} style={{ width: 100 }} color="red">
               Delete
@@ -124,6 +127,7 @@ const Profile = () => {
           onClose={() => {
             setOpened(false);
             setError(false);
+            setViewImg(null);
           }}
           title="Update profile"
           size="sm"
