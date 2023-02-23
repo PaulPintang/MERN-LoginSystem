@@ -25,7 +25,7 @@ const Profile = () => {
   const [error, setError] = useState<boolean>(false);
   const [viewImg, setViewImg] = useState<string | null>(null);
   const [processing, setProcessing] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const navigate = useNavigate();
 
